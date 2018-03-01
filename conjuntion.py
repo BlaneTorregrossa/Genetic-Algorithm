@@ -10,11 +10,12 @@ class _conjuntion(object):
         self.charlist = []
         self.operatorlist = []
         self._setchar()
+        self._setoperators()
 
     #Set Char to be used  (***)
     def _setchar(self):
         counter = 64
-        logtext = open("charList", "r+")
+        logtext = open("charList", "w")
         while counter < 90:
             counter = counter + 1
             self.charlist.append(chr(counter))
@@ -33,19 +34,23 @@ class _conjuntion(object):
     # + - and
     # ! - negation
     # * - or
-    def _setoperator(self):
+    def _setoperators(self):
+        counter = 0
+        logtext = open("operatorList.txt", "w")
         self.operatorlist = ["!", "+", "*", "(", ")"]
+        while counter != self.operatorlist.count:
+            logtext.write(self.operatorlist[counter])
 
-    # Setting clauses (***)
+    # Setting clauses
     def _setclause(self, vara, givenoperator, varb):
         givenstring = vara + givenoperator + varb
         check = False
         self.currentclause = givenstring
         if self.clausea == "" & check == False | self.clauseb != "" & self.clausea == "":
-            self.clausea = "(" + givenstring + ")"
+            self.clausea = givenstring
             check = True
         if self.clauseb == "" & check == False & self.clausea != "":
-            self.clauseb = "(" + givenstring + ")"
+            self.clauseb = givenstring
         givenstring = ""
 
     def _setpair(self, givenoperator):
