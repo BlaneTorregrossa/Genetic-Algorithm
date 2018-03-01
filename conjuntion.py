@@ -1,28 +1,53 @@
 class _conjuntion(object):
     def __init__(self):
-        self.variables = []
-        self.clauses = []
-        self.numvariables = []
-        self.numclauses = []
-        self.pair = []
-        self.target = ""
-        self.vara = ""
-        self._settarget()
-        self._setvariables(self.vara)
-       # self._setclauses()
-       # self._setclausespair()
+        self.variable = ""
+        self.currentclause = ""
+        self.clausea = ""
+        self.clauseb = ""
+        self.pair = ""
+        self.numvariables = 0
+        self.numclauses = 0
+        self.charlist = []
+        self.operatorlist = []
+        self._setchar()
 
+    #Set Char to be used  (***)
+    def _setchar(self):
+        counter = 64
+        logtext = open("charList", "r+")
+        while counter < 90:
+            counter = counter + 1
+            self.charlist.append(chr(counter))
+            latestvar = self.charlist[counter]
+            logtext.write(latestvar)
+            print latestvar + " was the last character added to the charlist!"
+        counter = 96
+        while counter < 122:
+            counter = counter + 1
+            self.charlist.append(chr(counter))
+            latestvar = self.charlist[counter]
+            logtext.write(latestvar)
+            print latestvar + " was the last character added to the charlist!"
 
-    def _settarget(self):
-        self.target = "Hello World!"
+    #Set what each operator used would be
+    # + - and
+    # ! - negation
+    # * - or
+    def _setoperator(self):
+        self.operatorlist = ["!", "+", "*", "(", ")"]
 
-    def _setvariables(self, currentvar):
-        prevvar = currentvar
-        self.variables = currentvar
-        if prevvar == currentvar:
-            prevvar = ""
-        
-    def _setclauses(self, var):
-        
+    # Setting clauses (***)
+    def _setclause(self, vara, givenoperator, varb):
+        givenstring = vara + givenoperator + varb
+        check = False
+        self.currentclause = givenstring
+        if self.clausea == "" & check == False | self.clauseb != "" & self.clausea == "":
+            self.clausea = "(" + givenstring + ")"
+            check = True
+        if self.clauseb == "" & check == False & self.clausea != "":
+            self.clauseb = "(" + givenstring + ")"
+        givenstring = ""
 
-    #def _setclausepair(self):
+    def _setpair(self, givenoperator):
+        self.pair = self.clausea + givenoperator + self.clauseb
+
