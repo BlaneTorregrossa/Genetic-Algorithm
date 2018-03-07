@@ -1,62 +1,99 @@
 
-# Class for CNF related data
-# does not include parser information
+# Very messy still needs to be cleaned
 class Conjuntion(object):
-    def __init__(self):
-        self.clausea = ""       # first clause for pair
-        self.clauseb = ""       # second clause for pair
-        self.pair = ""          # pair made of two given clauses and an operator
-        self.numvariables = 0   # number of variables avalible in charList
-        self.charlist = []      # List of a-z and A-Z characters
+    def __init__(self, expression):
+        self.expression = expression    # chosen expression
+        self.pair = []          # pair made of given variables and an operator
+        self.numvariables = 0   # number of variables avalible in varlist
+        self.varlist = []      # List of a-z and A-Z characters
         self.operatorlist = []  # List of operators used
+        self.clause = ''
+        # self._setexpression()
         self._setchar()
         self._setoperators()
+        self._setpair()
+        self._setclause()
 
 
-    #Set characters to be used in clauses
+    # Set characters to be used in clauses
     def _setchar(self):
         counter = 64
-        logtext = open("charList.txt", "w")
+        logtext = open('varList.txt', 'w')
         while counter < 90:
             counter = counter + 1
-            self.charlist.append(chr(counter))
-            latestvar = self.charlist[counter]
+            self.varlist.append(chr(counter))
+            latestvar = self.varlist[counter]
             logtext.writelines(latestvar)
-            print latestvar + " was the last character added to the charlist!"
+
         counter = 96
         while counter < 122:
             counter = counter + 1
-            self.charlist.append(chr(counter))
-            latestvar = self.charlist[counter]
+            self.varlist.append(chr(counter))
+            latestvar = self.varlist[counter]
             logtext.writelines(latestvar)
-            print latestvar + " was the last character added to the charlist!"
-        self.numvariables = self.charlist.count
 
-    #Set what each operator used would be
+        self.numvariables = self.varlist.count
+
+    # Set what each operator used would be
     # + - and
     # ! - negation
     # * - or
-    # (
-    # )
     def _setoperators(self):
         counter = 0
-        logtext = open("operatorList.txt", "w")
-        self.operatorlist = ["!", "+", "*", "(", ")"]
+        logtext = open('operatorList.txt', 'w')
+        self.operatorlist = ['!', '+', '*']
         while counter != self.operatorlist.count:
             logtext.write(self.operatorlist[counter])
 
-    # Setting clauses made from two given variables and an operator
-    def _setclause(self, vara, givenoperator, varb):
-        givenstring = vara + givenoperator + varb
-        check = False
-        if self.clausea == "" & check == False | self.clauseb != "" & self.clausea == "":
-            self.clausea = givenstring
-            check = True
-        if self.clauseb == "" & check == False & self.clausea != "":
-            self.clauseb = givenstring
-        givenstring = ""
+    # setting the pairs (***)
+    def _setpair(self):
+        tempvarlist = []
+        currentopperator = ''
+        for var in self.expression:
+            if var == '!':
+                currentopperator = '!'
+                continue
+            if var >= chr(65) and var <= chr(90):       # A Z
+                if currentopperator == ord('!'):
+                    tempvarlist.append(currentopperator + var)
+                    currentopperator = ''
+                    continue
+                else:
+                    tempvarlist.append(var)
+                    continue
 
-    # For setting a pair of clauses as one string
-    def _setpair(self, givenoperator):
-        self.pair = self.clausea + givenoperator + self.clauseb
+            if var == '!':
+                currentopperator = '!'
+                continue
+            if var >= chr(97) and var <= chr(122):      # a z
+                if currentopperator == ord('!'):
+                    tempvarlist.append(currentopperator + var)
+                    continue
+                else:
+                    tempvarlist.append(var)
+                    continue
+
+            newpair = '(' + tempvarlist[0] +  '*' + tempvarlist[1] + ')'
+            self.pair.append(newpair)
+            return self.pair
+
+    # set clause from pairs (*)
+    def _setclause(self):
+        currentpair = ''
+        counter = 0
+        size = len(self.pair)
+        while counter < len(size):
+            if currentpair != '':
+                currentpair = currentpair + ' + '
+            for _p in self.pair[counter]:
+                if _p == chr(41):       # )
+                    currentpair = self.pair[counter]
+                    continue
+            counter = counter + 1
+        return self.clause
+
+    # Sets expression (should choose from more than 1 file ***)
+    def _setexpression(self):
+        givenexpression = open('expressionList.txt', 'r')
+        self.expression = givenexpression
         
